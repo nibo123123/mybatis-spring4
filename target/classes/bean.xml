@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context
+		 http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<context:property-placeholder location="classpath:db.properties"/>
+
+	<!-- 数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/d1"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123456"></property>
+		<property name="initialSize" value="5"></property>
+	</bean>
+	
+	<!-- mybatis配置 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:SqlMapConfig.xml"/>
+	</bean>
+	
+	<!-- mybatis的mapper交给spring -->
+	<bean id="mapper" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="basePackage" value="chencj.cc.simple.dao"/>
+	</bean>
+	
+	<!-- jdbcTemplate的链接 -->
+	<!-- <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"/>
+	</bean> -->
+	
+	<!-- 事务管理驱动 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	
+	<!-- 注解事务驱动 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 增强事务  when where what  -->
+	<!-- what 增强数据库事务功能 -->
+	<!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name=""/>
+		</tx:attributes>
+	</tx:advice> -->
+	
+	<!-- <aop:config>
+		when 执行这个方法，where 这个方法被调用
+		<aop:pointcut expression="execution(* chencj.cc..*(..))" id="txPoint"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+	</aop:config> -->
+	
+	<!-- 注解依赖关系(DI) -->
+	<context:annotation-config/>
+	
+	<!-- (IOC)注解扫描实体类 -->
+	<context:component-scan base-package="chencj.cc.simple"/>
+	
+	<!-- <bean id="studentDao" class="chencj.cc.simple.dao.StudentDaoImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<bean id="studentService" class="chencj.cc.simple.service.StudentServiceImpl">
+		<property name="studentDao" ref="studentDao"></property>
+	</bean> -->
+
+</beans>

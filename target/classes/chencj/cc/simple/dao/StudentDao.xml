@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="chencj.cc.simple.dao.StudentDao" >
+	<resultMap type="chencj.cc.simple.domain.Student" id="studentMap">
+		<id property="id" column="id"/>
+		<result property="name"  column="name"/>
+		<result property="age"  column="age"/>
+		<result property="sex" column="sex"/>
+		
+	</resultMap>
+	
+	<insert id="save" parameterType="chencj.cc.simple.domain.Student">
+		insert into t1 (id,name,age,sex) values(#{id},#{name},#{age},#{sex})
+	</insert>
+	<select id="findOne" parameterType="java.lang.Integer" resultType="chencj.cc.simple.domain.Student">
+		select * from t1 where id = #{id}
+	</select>
+	<select id="findAll" resultMap="studentMap">
+		select * from t1 
+	</select>
+	
+	
+	
+	<update id="add" parameterType="chencj.cc.simple.domain.Student">
+		
+	</update>
+	
+</mapper>
